@@ -3,6 +3,7 @@ type ThreadCategory = "NoCategory" | "QNA" | "Diskussion" | "Meddelande" | "Hitt
 type ThreadCategoryType = Thread | QNAThread
 
 type User = {
+	id: number // Nytt
 	userName: string;
 	password: string
 }
