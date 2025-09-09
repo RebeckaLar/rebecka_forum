@@ -29,4 +29,5 @@ type ForumComment = {
 	thread: number;
 	content: string;
 	creator: User;
+	parentCommentId?: number, //Nytt
 }

@@ -1,3 +1,9 @@
+// 2.1 UTÖKADE KOMMENTARER: Kommentarer kan skapas på andra kommentarer
+// Uppdaterar CommentForm för att stödja att svara på en kommentar (inte bara tråd)
+
+// 1. Få den att acceptera en parent-comment (parentCommentId i forum.d.ts) 
+// 2. Se Comment.tsx
+
 import { useForm } from 'react-hook-form';
 import { useThread } from '../contexts/ThreadContext';
 import { useUser } from '../contexts/UserContext';
@@ -6,13 +12,15 @@ import { useState } from 'react';
 type CommentFormProps = {
   thread: Thread | QNAThread;
   onClose: () => void;
+  parentCommentId?: number; 
+  //Nytt. Gör optional då det inte måste finnas ett barn (svaret på kommentaren) till föräldern (kommentaren), isf undefined.
 }
 
 type FormData = {
   comment: string;
 }
 
-function CommentForm({ thread, onClose }: CommentFormProps) {
+function CommentForm({ thread, onClose, parentCommentId }: CommentFormProps) {
   const { actions } = useThread()
   const { currentUser } = useUser()
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
@@ -30,6 +38,7 @@ function CommentForm({ thread, onClose }: CommentFormProps) {
       thread: thread.id,
       content: data.comment,
       creator: currentUser,
+	    parentCommentId, //1. Få den att acceptera en parent-comment
     }
 
     actions.addComment(newComment);

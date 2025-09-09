@@ -1,3 +1,5 @@
+// 4. Visa bara 
+
 import { useThread } from "../contexts/ThreadContext";
 import Comment from "./Comment";
 
@@ -9,10 +11,13 @@ type CommentsListProps = {
 function CommentsList({ threadId, threadCategory }: CommentsListProps) {
   const { comments } = useThread();
 
-  const threadComments = comments.filter(
-    (c) => c.thread === threadId
-  );
+  // const threadComments = comments.filter(
+  //   (c) => c.thread === threadId
+  // );
 
+    const threadComments = comments.filter(
+    (c) => c.thread === threadId && !c.parentCommentId
+  );
   return (
     <div className="container mx-auto px-4 lg:max-w-6xl mt-6">
      {
