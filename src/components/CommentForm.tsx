@@ -1,13 +1,16 @@
 // 2.1 UTÖKADE KOMMENTARER: Kommentarer kan skapas på andra kommentarer
 // Uppdaterar CommentForm för att stödja att svara på en kommentar (inte bara tråd)
+  // 1. Få den att acceptera en parent-comment (parentCommentId i forum.d.ts) 
+  // 2. Se Comment.tsx
 
-// 1. Få den att acceptera en parent-comment (parentCommentId i forum.d.ts) 
-// 2. Se Comment.tsx
+// 2.2 UTÖKADE KOMMENTARER: Kommentarer får inte innehålla opassande språk (valfritt vad som ses som opassande) och
+// ska gömmas eller visas upp i censurerat läge om de innehåller det.
 
 import { useForm } from 'react-hook-form';
 import { useThread } from '../contexts/ThreadContext';
 import { useUser } from '../contexts/UserContext';
 import { useState } from 'react';
+import { Filter } from 'bad-words' //För 2.2
 
 type CommentFormProps = {
   thread: Thread | QNAThread;
@@ -25,10 +28,10 @@ function CommentForm({ thread, onClose, parentCommentId }: CommentFormProps) {
   const { currentUser } = useUser()
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false)
+  const filter = new Filter(); //För 2.2: Censurera opassande språk
 
   const onSubmit = (data: FormData) => {
     if (!currentUser) {
-      // alert("Du måste vara inloggad för att kommentera.");
       setShowLoginPopup(true)
       return;
     }
@@ -38,17 +41,20 @@ function CommentForm({ thread, onClose, parentCommentId }: CommentFormProps) {
       thread: thread.id,
       content: data.comment,
       creator: currentUser,
-	    parentCommentId, //1. Få den att acceptera en parent-comment
+	    parentCommentId, //För 2.1: Få den att acceptera en parent-comment
     }
 
-    actions.addComment(newComment);
-    onClose();
-  };
-  const closeLoginPopup = () => {
-    setShowLoginPopup(false);
-  };
+      if (filter.isProfane(newComment.content)) { //För 2.2: Censurera opassande språk
+        newComment.content = filter.clean(newComment.content);
+      }
+      actions.addComment(newComment);
+      onClose();
+    };
+  
+    const closeLoginPopup = () => {
+      setShowLoginPopup(false);
+    };
 
-  // console.log(errors);
   return (
     <div onClick={onClose} className='fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex justify-center items-center'>
       <div onClick={(e) => e.stopPropagation()} className="relative bg-white max-w-screen-sm shadow-md rounded px-8 pt-6 pb-8 my-6 flex flex-col justify-center">
