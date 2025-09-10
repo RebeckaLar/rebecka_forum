@@ -28,8 +28,8 @@ function CommentForm({ thread, onClose, parentCommentId }: CommentFormProps) {
   const { currentUser } = useUser()
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false)
-  const filter = new Filter(); //För 2.2: Censurera opassande språk
-
+  // const filter = new Filter(); //För 2.2: Censurera opassande språk
+const filter = new Filter({ replaceRegex: /[A-Za-z0-9가-힣_]/g })
   const onSubmit = (data: FormData) => {
     if (!currentUser) {
       setShowLoginPopup(true)
@@ -44,6 +44,7 @@ function CommentForm({ thread, onClose, parentCommentId }: CommentFormProps) {
 	    parentCommentId, //För 2.1: Få den att acceptera en parent-comment
     }
 
+    filter.addWords('fan', 'skit')
       if (filter.isProfane(newComment.content)) { //För 2.2: Censurera opassande språk
         newComment.content = filter.clean(newComment.content);
       }
