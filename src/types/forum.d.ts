@@ -16,7 +16,13 @@ type Thread = {
 	description: string;
 	creator: User;
 	commentsLocked?: boolean;
+	// tags: ThreadTag[]
 }
+
+// type ThreadTag = {
+// 	id: number;
+// 	name: string;
+// }
 
 type QNAThread = Thread & { //Type extension
 	category: "QNA";
