@@ -13,7 +13,7 @@ function LoginForm({ onSuccess }: LoginFormProps) {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<User>({ defaultValues: { userName: "", password: "" } })
+  } = useForm<User>({ defaultValues: { userName: "", password: ""} })
 
   const { users, actions } = useUser()
 
@@ -30,8 +30,9 @@ function LoginForm({ onSuccess }: LoginFormProps) {
   }, [isSubmitted, reset])
 
   const onSubmit: SubmitHandler<User> = (data: User) => {
-    const _user: User = { userName: data.userName.trim(), password: data.password.trim(), id: data.id }
+    const _user: User = {  id: data.id, userName: data.userName.trim(), password: data.password.trim() }
     const existingUser = users.find((u) => u.userName == _user.userName)
+    console.log(data.id)
 
     if (!existingUser) {
       setFormError("Användaren kunde inte hittas")

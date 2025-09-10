@@ -12,7 +12,7 @@ function RegisterForm({ onSuccess }: RegisterFormProps) {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<User>({ defaultValues: { userName: "", password: "" } })
+  } = useForm<User>({ defaultValues: { id: Math.floor((Math.random() * 10000) + 1), userName: "", password: "" } })
 
   const { users, actions } = useUser()
 
@@ -21,7 +21,7 @@ function RegisterForm({ onSuccess }: RegisterFormProps) {
 
   useEffect(() => {
     if (isSubmitted == true) {
-      reset({ userName: "", password: "" })
+      reset({ userName: "", password: "", id: 0 })
       onSuccess()
     }
     setIsSubmitted(false)
@@ -29,8 +29,8 @@ function RegisterForm({ onSuccess }: RegisterFormProps) {
   }, [isSubmitted, reset])
 
   const onSubmit: SubmitHandler<User> = (data: User) => {
-    const _user: User = { userName: data.userName.trim(), password: data.password.trim(), id: data.id }
-    const existingUser = users.find((u) => u.userName == _user.userName)
+    const _user: User = { id: data.id, userName: data.userName.trim(), password: data.password.trim()}
+    const existingUser = users.find((u) => u.id == _user.id) //Förut user.userName
 
     if (!existingUser) {
       actions.createUser(_user)
