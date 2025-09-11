@@ -10,11 +10,10 @@ type ThreadProps = {
 };
 
 export default function Thread({ thread }: ThreadProps) {
-  const { comments, tags, actions } = useThread();
+  const { comments, actions } = useThread();
   const { currentUser } = useUser();
   const [showCommentForm, setShowCommentForm] = useState<boolean>(false)
   const [commentsLocked, setCommentsLocked] = useState<boolean | undefined>(thread.commentsLocked)
-  // const [tags, setTags] = useState<ThreadTag>()
 
   const threadComments = comments?.filter(c => c.thread === thread.id);
   const answerCount = threadComments.length;
@@ -26,27 +25,29 @@ export default function Thread({ thread }: ThreadProps) {
     actions.toggleCommentsLock(threadId);
     setCommentsLocked((prev) => !prev);
   }
-  // console.log(tags)
-  // console.log(tags.length)
-  // console.log(thread.category)
-  // console.log(thread.tags)
-  // console.log(thread.tags.id)
-  // console.log(thread.tags.tagName)
   
   return (
     <div className='p-4 rounded-lg mb-4 border-gray-300 bg-blue-950'>
 
-      <div className='flex justify-between mb-4'>
-        <div className='flex gap-2 items-center'>
-          <div className='text-gray-200'><FaUser /></div>
-          <p className='font-semibold text-gray-200'>{thread.creator.userName}</p>
-        </div>
-        <div>'
-          {/* <p className='text-sm text-gray-200'>{tags['tagName']}</p> */}
-          {/* <p className='text-sm text-gray-200'>{t => setTags(t.)}</p> */}
-          <p className='text-sm text-gray-200'>{thread.category}</p>
-        </div>
-      </div>
+<div className='flex justify-between mb-4'>
+  <div className='flex gap-2 items-center'>
+    <div className='text-gray-200'><FaUser /></div>
+    <p className='font-semibold text-gray-200'>{thread.creator.userName}</p>
+  </div>
+  <div className='text-right'>
+    <p className='text-sm text-gray-200 mb-1'>{thread.category}</p>
+    <div className="flex flex-wrap gap-1 justify-end">
+      {thread.tags.map(tag => (
+        <span
+          key={tag.id}
+          className="bg-purple-400/20 text-purple-300 text-xs font-medium px-2 py-1 rounded-md"
+        >
+          {tag.tagName}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>
 
       <div className='flex items-center justify-between'>
         <h3 className='text-gray-200 text-xl font-semibold'>{thread.title}</h3>

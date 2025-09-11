@@ -8,6 +8,8 @@ import Modal from 'react-modal'
 import ThreadForm from './ThreadForm';
 import { useUser } from '../contexts/UserContext';
 import { useNavigate } from 'react-router';
+import FilteredThreadList from './FilteredThreadList';
+// import ThreadTagsPreview from './ThreadListWithTags';
 
 
 export default function ThreadList() {
@@ -75,15 +77,7 @@ export default function ThreadList() {
       </Modal>
 
       <div className="space-y-4">
-        {
-          threads.map((thread) => (
-            <ThreadPreview
-              key={thread.id}
-              thread={thread}
-              onClick={() => setselectedThread(thread)}
-            />
-          ))
-        }
+       <FilteredThreadList onThreadClick={setselectedThread} />
       </div >
     </div >
   )

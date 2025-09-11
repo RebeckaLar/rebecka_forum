@@ -6,7 +6,6 @@ function LogOutButton() {
 
     const handleLogOut: React.MouseEventHandler<HTMLButtonElement> = () => {
         actions.setUser(null)
-        // alert(`Användare ${currentUser?.userName} loggade ut`)
         return
     }
 
