@@ -1,11 +1,12 @@
 type ThreadCategory = "NoCategory" | "QNA" | "Diskussion" | "Meddelande" | "Hitta gruppmedlem";
+type TagCategory = "Arbetsmetodik" | "HTML & CSS" | "JavaScript" | "Backend" | "TypeScript" | "LIA" | "Examensarbete"; //Nytt
 
 type ThreadCategoryType = Thread | QNAThread
 
 type User = {
 	id: number // Nytt
 	userName: string;
-	password: string
+	password: string;
 }
 
 type Thread = {
@@ -15,14 +16,14 @@ type Thread = {
 	creationDate: string;
 	description: string;
 	creator: User;
+	tags: ThreadTag; //Nytt
 	commentsLocked?: boolean;
-	// tags: ThreadTag[]
 }
 
-// type ThreadTag = {
-// 	id: number;
-// 	name: string;
-// }
+type ThreadTag = { //Nytt
+	tagId: number;
+	tagName: Tag;
+}
 
 type QNAThread = Thread & { //Type extension
 	category: "QNA";

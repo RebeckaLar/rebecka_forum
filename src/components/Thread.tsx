@@ -14,6 +14,7 @@ export default function Thread({ thread }: ThreadProps) {
   const { currentUser } = useUser();
   const [showCommentForm, setShowCommentForm] = useState<boolean>(false)
   const [commentsLocked, setCommentsLocked] = useState<boolean | undefined>(thread.commentsLocked)
+  // const [tags, setTags] = useState<ThreadTag>()
 
   const threadComments = comments?.filter(c => c.thread === thread.id);
   const answerCount = threadComments.length;
@@ -26,6 +27,11 @@ export default function Thread({ thread }: ThreadProps) {
     setCommentsLocked((prev) => !prev);
   }
 
+  // console.log(thread.category)
+  // console.log(thread.tags)
+  // console.log(thread.tags.tagId)
+  // console.log(thread.tags.tagName)
+  
   return (
     <div className='p-4 rounded-lg mb-4 border-gray-300 bg-blue-950'>
 
@@ -34,7 +40,9 @@ export default function Thread({ thread }: ThreadProps) {
           <div className='text-gray-200'><FaUser /></div>
           <p className='font-semibold text-gray-200'>{thread.creator.userName}</p>
         </div>
-        <div>
+        <div>'
+          <p className='text-sm text-gray-200'>{thread.tags.tagName}</p>
+          {/* <p className='text-sm text-gray-200'>{t => setTags(t.)}</p> */}
           <p className='text-sm text-gray-200'>{thread.category}</p>
         </div>
       </div>
@@ -45,7 +53,7 @@ export default function Thread({ thread }: ThreadProps) {
       </div>
 
       <p className='text-gray-200 my-3'>{thread.description}</p>
-
+      
       <p className='text-gray-200 italic text-sm mb-2'> {answerCount > 0 ? `${answerCount} answer${answerCount > 1 ? "s" : ""}` : "No answers yet"}</p>
 
       {!commentsLocked && (

@@ -2,15 +2,18 @@ import { createContext, useContext, useEffect, useState, type PropsWithChildren 
 import LocalStorageService from "../utils/LocalStorageService";
 import { dummyThreads } from "../data/threads";
 import { dummyComments } from "../data/comments";
+import { preDefinedTags } from "../data/tag"; //NYTT
 
 type ThreadState = {
   threads: ThreadCategoryType[];
   comments: ForumComment[];
+  tags: ThreadTag[]; //NYTT
   actions: {
     createThread: (thread: ThreadCategoryType) => void;
     updateQNAThread: (threadIndex: number, updatedThread: QNAThread) => void;
     getThreadByID: (threadId: ThreadCategoryType['id']) => Thread | undefined;
     addComment: (comment: ForumComment) => void;
+    addTags: (tag: ThreadTag) => void; //NYTT
     isQNAAnswered: (threadId: ThreadCategoryType['id']) => boolean;
     toggleCommentsLock: (threadId: Thread['id']) => void;
   }
@@ -19,11 +22,13 @@ type ThreadState = {
 const defaultState: ThreadState = {
   threads: [],
   comments: [],
+  tags: [], //NYTT
   actions: {
     createThread: () => { },
     updateQNAThread: () => {},
     getThreadByID: () => undefined,
     addComment: () => { },
+    addTags: () => { }, //NYTT
     isQNAAnswered: () => false,
     toggleCommentsLock: () => { }
   }
@@ -34,10 +39,12 @@ const ThreadContext = createContext<ThreadState>(defaultState);
 function ThreadProvider({ children }: PropsWithChildren) {
   const [threads, setThreads] = useState<ThreadCategoryType[]>([]);
   const [comments, setComments] = useState<ForumComment[]>([]);
+  const [tags, setTags] = useState<ThreadTag[]>([]); //NYTT
 
   useEffect(() => {
     _getThreads();
     getComments();
+    getTags(); //NYTT
   }, [])
 
   const _getThreads = () => {
@@ -74,6 +81,19 @@ function ThreadProvider({ children }: PropsWithChildren) {
     setComments(_comments)
   }
 
+    const addTags: typeof defaultState.actions.addTags = (tag): void => {
+    const newTags = [...tags, tag]
+    setTags(newTags)
+    LocalStorageService.setItem<ThreadTag[]>('@forum/tags', newTags)
+
+    setTags(newTags)
+  }
+
+    const getTags = () => {
+    const _tags: ThreadTag[] = LocalStorageService.getItem('@forum/tags', preDefinedTags)
+    setTags(_tags)
+  }
+
   const isQNAAnswered: typeof defaultState.actions.isQNAAnswered = (threadId: number): boolean => {
     const thread = threads.find(t => t.id === threadId)
 
@@ -101,6 +121,7 @@ function ThreadProvider({ children }: PropsWithChildren) {
     updateQNAThread,
     getThreadByID,
     addComment,
+    addTags,
     isQNAAnswered,
     toggleCommentsLock
   }
@@ -109,6 +130,7 @@ function ThreadProvider({ children }: PropsWithChildren) {
     <ThreadContext.Provider value={{
       threads,
       comments,
+      tags,
       actions
     }}>
       {children}

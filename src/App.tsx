@@ -1,6 +1,7 @@
 import { Outlet } from "react-router"
 import Header from "./components/Header"
 import ThreadList from "./components/ThreadList"
+import TagList from "./components/TagList"
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
         <Outlet />
       </main>
       <ThreadList />
+      <TagList />
     </>
   )
 }

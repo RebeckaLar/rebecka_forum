@@ -34,7 +34,7 @@ function Comment({ comment, threadCategory, threadId }: CommentProps) {
   
   const _thread = QNAThreads.find(
     (t) => t.id === threadId
-  );   
+  );
 
   const handleToggleIsAnswered = () => {
     if (!currentUser) {
@@ -53,7 +53,8 @@ function Comment({ comment, threadCategory, threadId }: CommentProps) {
         creator: _thread.creator,
         commentsLocked: _thread.commentsLocked, 
         isAnswered: true, 
-        commentAnswerId: comment.id
+        commentAnswerId: comment.id,
+        tags: _thread.tags
       }
       
       const threadIndex = threads.findIndex(
