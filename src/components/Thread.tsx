@@ -10,7 +10,7 @@ type ThreadProps = {
 };
 
 export default function Thread({ thread }: ThreadProps) {
-  const { comments, actions } = useThread();
+  const { comments, tags, actions } = useThread();
   const { currentUser } = useUser();
   const [showCommentForm, setShowCommentForm] = useState<boolean>(false)
   const [commentsLocked, setCommentsLocked] = useState<boolean | undefined>(thread.commentsLocked)
@@ -26,10 +26,11 @@ export default function Thread({ thread }: ThreadProps) {
     actions.toggleCommentsLock(threadId);
     setCommentsLocked((prev) => !prev);
   }
-
+  // console.log(tags)
+  // console.log(tags.length)
   // console.log(thread.category)
   // console.log(thread.tags)
-  // console.log(thread.tags.tagId)
+  // console.log(thread.tags.id)
   // console.log(thread.tags.tagName)
   
   return (
@@ -41,7 +42,7 @@ export default function Thread({ thread }: ThreadProps) {
           <p className='font-semibold text-gray-200'>{thread.creator.userName}</p>
         </div>
         <div>'
-          <p className='text-sm text-gray-200'>{thread.tags.tagName}</p>
+          {/* <p className='text-sm text-gray-200'>{tags['tagName']}</p> */}
           {/* <p className='text-sm text-gray-200'>{t => setTags(t.)}</p> */}
           <p className='text-sm text-gray-200'>{thread.category}</p>
         </div>

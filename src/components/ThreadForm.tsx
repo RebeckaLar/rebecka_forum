@@ -1,30 +1,64 @@
+// Track selected tags in form state.
+// Add/remove tags when user toggles them.
+// Submit as an array of ThreadTag objects.
+
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { useThread } from '../contexts/ThreadContext';
 import { useUser } from '../contexts/UserContext';
+import Tag from "./Tag";
+import { useState } from 'react';
 
 type ThreadFormProps = {
     onClose?: () => void;
 }
 
+// type ThreadFormData = Omit<Thread, 'id' | 'creator' | 'creationDate'>
 type ThreadFormData = Omit<Thread, 'id' | 'creator' | 'creationDate'>
 
+
 export default function ThreadForm({ onClose }: ThreadFormProps) {
-    const { threads, actions } = useThread();
+    const { threads, tags, actions } = useThread();
     const { currentUser } = useUser();
+    const [selectedTag, setSelectedTag] = useState<ThreadTag>();
 
     const creationDate = new Date().toLocaleDateString("sv-SE");
 
+    // const {
+    //     register,
+    //     setValue,
+    //     handleSubmit,
+    //     formState: { errors },
+    // } = useForm<ThreadFormData>()
+
     const {
-        register,
-        setValue,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<ThreadFormData>()
+  register,
+  setValue,
+  getValues,
+  handleSubmit,
+  formState: { errors },
+  watch
+} = useForm<ThreadFormData>({
+  defaultValues: {
+    tags: [], // ✅ Empty array by default
+  }
+});
+
+const toggleTag = (tag: ThreadTag) => {
+  const currentTags = getValues("tags") || [];
+  const tagExists = currentTags.some(t => t.id === tag.id);
+
+  const newTags = tagExists
+    ? currentTags.filter(t => t.id !== tag.id)
+    : [...currentTags, tag];
+
+  setValue("tags", newTags, { shouldValidate: true });
+};
 
     const onSubmit: SubmitHandler<ThreadFormData> = (data) => {
+        console.log("hej")
+        console.log(data.tags)
 
         if (!currentUser) {
-            // seterrorMessage('Du måste vara inloggad för att skapa en tråd')
             return
         }
 
@@ -37,10 +71,10 @@ export default function ThreadForm({ onClose }: ThreadFormProps) {
                     description: data.description,
                     creationDate: creationDate,
                     creator: {  id: currentUser.id, userName: currentUser.userName, password: currentUser.password},
+                    tags: data.tags,
                     commentsLocked: data.commentsLocked,
                     isAnswered: false,
                     commentAnswerId: 0,
-                    tags: { tagId: data.tags.tagId, tagName: data.tags.tagName }
                 }
                 actions.createThread(newQNAThread);
                 onClose?.();
@@ -52,8 +86,8 @@ export default function ThreadForm({ onClose }: ThreadFormProps) {
                     description: data.description,
                     creationDate: creationDate,
                     creator: { id: currentUser.id, userName: currentUser.userName, password: currentUser.password },
+                    tags: data.tags,
                     commentsLocked: data.commentsLocked,
-                    tags: { tagId: data.tags.tagId, tagName: data.tags.tagName}
                 }
                 actions.createThread(newThread);
                 onClose?.();
@@ -90,65 +124,27 @@ export default function ThreadForm({ onClose }: ThreadFormProps) {
                         {errors.category && errors.category.type === "validate" && <p className="text-red-600 text-sm italic mb-5 mt-1">Vänligen välj en kategori till tråden</p>}
                     </div>
                 </div>
-{/* VÄLJ TAGG */}
-                {/* <div className="mb-4">
-                    <label className="block mb-2" >Taggar: </label>
-                    <div className=''>
-                        <div
-                            className='border flex'
-                            required
-                            {...register("tags.tagName", { required: true })}
-                            onChange={e => setValue("tags.tagName", e.target.value as Tag, { shouldValidate: true })}
-                        > */}
-                            {/* <option value="NoTag" className="inline-flex items-center rounded-md bg-purple-400/10 px-2 py-1 text-xs font-medium text-purple-400 inset-ring inset-ring-purple-400/30">Välj tagg:</option> */}
-{/*                             
-                            <option 
-                            value="Arbetsmetodik" 
-                            className="inline-flex items-center rounded-md bg-purple-400/10 px-2 py-1 text-xs font-medium text-purple-400 inset-ring inset-ring-purple-400/30">
-                                Arbetsmetodik
-                            </option>
-                            <option value="HTML & CSS">HTML & CSS</option>
-                            <option value="JavaScript">JavaScript</option>
-                            <option value="Backend">Backend</option>
-                            <option value="TypeScript">TypeScript</option>
-                        </div>
-                        {errors.tags && errors.tags.type === "validate" && <p className="text-red-600 text-sm italic mb-5 mt-1">Vänligen välj en tagg till tråden</p>}
-                    </div>
-                </div> */}
-
-                {/* <div>
-                    <input 
-                    id='option1'
-                    className='cursor-pointer'
-                    type='checkbox' 
-                    value="Arbetsmetodik"
-                    ></input>
-                    <label id="option1"className="inline-flex items-center rounded-md bg-purple-400/10 px-2 py-1 text-xs font-medium text-purple-400 inset-ring inset-ring-purple-400/30">Arbetsmetodik</label>
-                </div> */}
-
 
                 <div>
-                    <label className="block mb-2" >Taggar: </label>
-                    <div>
-                        <label className=" inline-flex items-center rounded-md bg-purple-400/10 px-2 py-1 text-xs font-medium text-purple-400 inset-ring inset-ring-purple-400/30">
-                            <input
-                            type="checkbox"
-                            className='checked:bg-blue-500'
-                            {...register("tags.tagName", { required: true })}
-                            />
-                        </label>
-                    </div>
-                    {/* <div>
-                        <label className=" inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-purple-400/30">
-                            <input
-                            type="checkbox"
-                            className='checked:bg-blue-500'
-                            {...register("tags.tagName", { required: true })}
-                            />
-                            HTML & CSS
-                        </label>
-                    </div> */}
-                </div>
+  <label className="block mb-2">Taggar: </label>
+  <div className="flex flex-wrap gap-2">
+    {tags.map((tag) => {
+      const selectedTags = watch("tags") || [];
+      const isSelected = selectedTags.some((t) => t.id === tag.id);
+
+      return (
+        <Tag
+          key={tag.id}
+          tag={tag}
+          selected={isSelected}
+          onToggle={toggleTag}
+        />
+      );
+    })}
+  </div>
+  {errors.tags && <p className="text-red-600 text-sm italic">Vänligen välj minst en tagg</p>}
+</div>
+
 
                 <div>
                     <label>Beskrivning: </label>
@@ -162,8 +158,6 @@ export default function ThreadForm({ onClose }: ThreadFormProps) {
                         <span className="ml-2">Låsa kommentarer?</span>
                     </label>
                 </div>
-                {/* {errorMessage && (<p className='text-red-600 text-sm mb-4'>{errorMessage}</p>)} */}
-
                 <button
                     type='submit'
                     className='bg-green-800 text-white p-3 rounded mt-5'

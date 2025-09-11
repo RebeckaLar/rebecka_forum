@@ -12,7 +12,7 @@ function App() {
         <Outlet />
       </main>
       <ThreadList />
-      <TagList />
+      {/* <TagList /> */}
     </>
   )
 }

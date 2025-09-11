@@ -1,20 +1,35 @@
-type TagProps = {
-    singleTag: ThreadTag;
-    tagTypeName: TagCategory;
+import { useState } from "react";
 
+// type TagProps = {
+//     tagTypeName: ThreadTag['tagName']
+//     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+// };
+
+type TagProps = {
+  tag: ThreadTag;
+  selected: boolean;
+  onToggle: (tag: ThreadTag) => void;
 };
 
-export default function ThreadPreview({ singleTag, tagTypeName }: TagProps) {
+const Tag: React.FC<TagProps> = ({ tag, selected, onToggle }) => {
+  const handleChange = () => {
+    onToggle(tag);
+  };
 
-  console.log(singleTag)
-    return (
-        <>
-            <div className="flex items-center gap-10">
-                <div className="justify-between mt-2 inline-flex items-center rounded-md bg-purple-400/10 px-2 py-1 text-xs font-medium text-purple-400 inset-ring inset-ring-purple-400/30">
-                    <p className="text-xl">{tagTypeName}</p>
-                </div>
+  return (
+    <label
+      className={`cursor-pointer m-1 rounded-md px-2 py-1 text-xs font-medium inset-ring transition
+        ${selected ? "bg-purple-500 text-white" : "bg-purple-400/10 text-purple-400 hover:bg-sky-700"}`}
+        >
+      {tag.tagName}
+      <input
+        type="checkbox"
+        checked={selected}
+        onChange={handleChange}
+        className="hidden"
+      />
+    </label>
+  )
+};
 
-            </div>
-        </>
-    )
-  }
+export default Tag;

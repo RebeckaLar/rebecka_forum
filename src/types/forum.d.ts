@@ -16,13 +16,15 @@ type Thread = {
 	creationDate: string;
 	description: string;
 	creator: User;
-	tags: ThreadTag; //Nytt
+	// tags: ThreadTag; //Nytt
+	tags: ThreadTag[]; // support multiple tags
 	commentsLocked?: boolean;
 }
 
 type ThreadTag = { //Nytt
-	tagId: number;
-	tagName: Tag;
+	id: number;
+	tagName: TagCategory;
+
 }
 
 type QNAThread = Thread & { //Type extension

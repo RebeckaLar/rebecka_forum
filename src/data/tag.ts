@@ -1,30 +1,30 @@
 export const preDefinedTags: ThreadTag[] = [
     {
-        tagId: 5834,
+        id: 5834,
         tagName: "Arbetsmetodik"
     },
      {
-        tagId: 3123,
+        id: 3123,
         tagName: "HTML & CSS"
     },
      {
-        tagId: 4634,
+        id: 4634,
         tagName: "JavaScript"
     },
     {
-        tagId: 7889,
+        id: 7889,
         tagName: "Backend"
     },
     {
-        tagId: 3453,
+        id: 3453,
         tagName: "TypeScript"
     },
     {
-        tagId: 1432,
+        id: 1432,
         tagName: "LIA"
     },
     {
-        tagId: 8767,
+        id: 8767,
         tagName: "Examensarbete"
     },
 ]
